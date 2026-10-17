@@ -27,7 +27,7 @@ classical_gram_schmidt_qr <- function(A, tol = NULL) {
 
       for (i in seq_len(j - 1)) {
 
-        # Compute the projection coefficient using the original column
+        # Compute the projection coefficient
         R[i, j] <- sum(Q[, i] * A[, j])
 
         # Remove the component along q_i

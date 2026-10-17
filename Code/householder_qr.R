@@ -52,7 +52,7 @@ householder_qr <- function(A, tol = NULL) {
       # Normalize the Householder vector
       v <- v / v_norm
 
-      # Apply the reflector directly to the active block of R
+      # Apply the Householder reflector directly to R
       active_R <- R[k:m, k:n, drop = FALSE]
 
       R[k:m, k:n] <-

@@ -1,0 +1,266 @@
+============================================================
+HOUSEHOLDER QR NUMERICAL STUDY
+============================================================
+
+R version:
+R version 4.5.0 (2025-04-11 ucrt) 
+
+Master random seed: 20261018 
+
+============================================================
+1. SMALL VERIFICATION EXAMPLE
+============================================================
+                 method       e_orth        e_rec
+            Householder 4.172578e-16 2.974169e-16
+ Classical Gram-Schmidt 3.925231e-17 0.000000e+00
+          R built-in QR 2.513374e-16 7.616067e-17
+
+============================================================
+2. RANDOM MATRIX ACCURACY EXPERIMENT
+============================================================
+
+Random accuracy: 10x5
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+Random accuracy: 20x10
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+Random accuracy: 50x25
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+Random accuracy: 100x50
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+Random accuracy: 200x100
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+Random accuracy: 300x150
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+============================================================
+3. CONTROLLED-CONDITION STABILITY EXPERIMENT
+============================================================
+
+Controlled condition number: 1e+00
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+Controlled condition number: 1e+02
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+Controlled condition number: 1e+04
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+Controlled condition number: 1e+06
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+Controlled condition number: 1e+08
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+Controlled condition number: 1e+10
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+Controlled condition number: 1e+12
+  Completed 10/50 matrices
+  Completed 20/50 matrices
+  Completed 30/50 matrices
+  Completed 40/50 matrices
+  Completed 50/50 matrices
+
+============================================================
+4. RUNTIME SCALING EXPERIMENT
+============================================================
+
+Runtime experiment: 10x5
+  Completed 1/20 matrices
+  Completed 2/20 matrices
+  Completed 3/20 matrices
+  Completed 4/20 matrices
+  Completed 5/20 matrices
+  Completed 6/20 matrices
+  Completed 7/20 matrices
+  Completed 8/20 matrices
+  Completed 9/20 matrices
+  Completed 10/20 matrices
+  Completed 11/20 matrices
+  Completed 12/20 matrices
+  Completed 13/20 matrices
+  Completed 14/20 matrices
+  Completed 15/20 matrices
+  Completed 16/20 matrices
+  Completed 17/20 matrices
+  Completed 18/20 matrices
+  Completed 19/20 matrices
+  Completed 20/20 matrices
+
+Runtime experiment: 20x10
+  Completed 1/20 matrices
+  Completed 2/20 matrices
+  Completed 3/20 matrices
+  Completed 4/20 matrices
+  Completed 5/20 matrices
+  Completed 6/20 matrices
+  Completed 7/20 matrices
+  Completed 8/20 matrices
+  Completed 9/20 matrices
+  Completed 10/20 matrices
+  Completed 11/20 matrices
+  Completed 12/20 matrices
+  Completed 13/20 matrices
+  Completed 14/20 matrices
+  Completed 15/20 matrices
+  Completed 16/20 matrices
+  Completed 17/20 matrices
+  Completed 18/20 matrices
+  Completed 19/20 matrices
+  Completed 20/20 matrices
+
+Runtime experiment: 50x25
+  Completed 1/20 matrices
+  Completed 2/20 matrices
+  Completed 3/20 matrices
+  Completed 4/20 matrices
+  Completed 5/20 matrices
+  Completed 6/20 matrices
+  Completed 7/20 matrices
+  Completed 8/20 matrices
+  Completed 9/20 matrices
+  Completed 10/20 matrices
+  Completed 11/20 matrices
+  Completed 12/20 matrices
+  Completed 13/20 matrices
+  Completed 14/20 matrices
+  Completed 15/20 matrices
+  Completed 16/20 matrices
+  Completed 17/20 matrices
+  Completed 18/20 matrices
+  Completed 19/20 matrices
+  Completed 20/20 matrices
+
+Runtime experiment: 100x50
+  Completed 1/20 matrices
+  Completed 2/20 matrices
+  Completed 3/20 matrices
+  Completed 4/20 matrices
+  Completed 5/20 matrices
+  Completed 6/20 matrices
+  Completed 7/20 matrices
+  Completed 8/20 matrices
+  Completed 9/20 matrices
+  Completed 10/20 matrices
+  Completed 11/20 matrices
+  Completed 12/20 matrices
+  Completed 13/20 matrices
+  Completed 14/20 matrices
+  Completed 15/20 matrices
+  Completed 16/20 matrices
+  Completed 17/20 matrices
+  Completed 18/20 matrices
+  Completed 19/20 matrices
+  Completed 20/20 matrices
+
+Runtime experiment: 200x100
+  Completed 1/20 matrices
+  Completed 2/20 matrices
+  Completed 3/20 matrices
+  Completed 4/20 matrices
+  Completed 5/20 matrices
+  Completed 6/20 matrices
+  Completed 7/20 matrices
+  Completed 8/20 matrices
+  Completed 9/20 matrices
+  Completed 10/20 matrices
+  Completed 11/20 matrices
+  Completed 12/20 matrices
+  Completed 13/20 matrices
+  Completed 14/20 matrices
+  Completed 15/20 matrices
+  Completed 16/20 matrices
+  Completed 17/20 matrices
+  Completed 18/20 matrices
+  Completed 19/20 matrices
+  Completed 20/20 matrices
+
+Runtime experiment: 300x150
+  Completed 1/20 matrices
+  Completed 2/20 matrices
+  Completed 3/20 matrices
+  Completed 4/20 matrices
+  Completed 5/20 matrices
+  Completed 6/20 matrices
+  Completed 7/20 matrices
+  Completed 8/20 matrices
+  Completed 9/20 matrices
+  Completed 10/20 matrices
+  Completed 11/20 matrices
+  Completed 12/20 matrices
+  Completed 13/20 matrices
+  Completed 14/20 matrices
+  Completed 15/20 matrices
+  Completed 16/20 matrices
+  Completed 17/20 matrices
+  Completed 18/20 matrices
+  Completed 19/20 matrices
+  Completed 20/20 matrices
+
+============================================================
+5. GENERATING FIGURES
+============================================================
+
+============================================================
+NUMERICAL STUDY COMPLETED SUCCESSFULLY
+============================================================
+
+Random matrices per size: 50 
+Condition-number matrices per level: 50 
+Runtime input matrices per size: 20 
+Bootstrap repetitions: 1000 
+
+Results and figures were saved successfully.

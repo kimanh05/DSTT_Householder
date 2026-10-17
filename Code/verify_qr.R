@@ -37,8 +37,6 @@ builtin_qr <- function(A) {
 
   A <- as.matrix(A)
 
-  # A small tolerance is used so that the nearly dependent
-  # test matrices are still treated as full-rank matrices.
   qr_object <- qr(
     A,
     tol = 1e-15,

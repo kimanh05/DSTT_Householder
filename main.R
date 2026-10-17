@@ -1,34 +1,232 @@
 # ============================================================
-# QR DECOMPOSITION USING HOUSEHOLDER REFLECTIONS
-# Linear Algebra Final Project
+# HOUSEHOLDER QR NUMERICAL STUDY
 # ============================================================
 
-source("householder_qr.R")
-source("classical_gram_schmidt_qr.R")
-source("verify_qr.R")
-source("experiments.R")
-source("plots.R")
+
+# ============================================================
+# Create output directories
+# ============================================================
+
+required_directories <- c(
+  "Results",
+  "Plots",
+  "Logs",
+  "Report"
+)
+
+for (
+  directory_name in
+    required_directories
+) {
+
+  if (
+    !dir.exists(
+      directory_name
+    )
+  ) {
+
+    dir.create(
+      directory_name,
+      recursive = TRUE
+    )
+  }
+}
+
+
+# ============================================================
+# Load source files
+# ============================================================
+
+source(
+  file.path(
+    "Code",
+    "householder_qr.R"
+  )
+)
+
+source(
+  file.path(
+    "Code",
+    "classical_gram_schmidt_qr.R"
+  )
+)
+
+source(
+  file.path(
+    "Code",
+    "verify_qr.R"
+  )
+)
+
+source(
+  file.path(
+    "Code",
+    "matrix_generators.R"
+  )
+)
+
+source(
+  file.path(
+    "Code",
+    "statistics_helpers.R"
+  )
+)
+
+source(
+  file.path(
+    "Code",
+    "experiments.R"
+  )
+)
+
+source(
+  file.path(
+    "Code",
+    "plots.R"
+  )
+)
+
+
+# ============================================================
+# Experimental configuration
+# ============================================================
+
+MASTER_SEED <- 20261018
+
+RANDOM_TRIALS_PER_SIZE <- 50
+
+CONDITION_TRIALS_PER_LEVEL <- 50
+
+RUNTIME_INPUT_TRIALS <- 20
+
+TIMING_BATCHES <- 5
+
+BOOTSTRAP_REPS <- 1000
+
+
+MATRIX_SIZES <- matrix(
+  c(
+    10, 5,
+    20, 10,
+    50, 25,
+    100, 50,
+    200, 100,
+    300, 150
+  ),
+  ncol = 2,
+  byrow = TRUE
+)
+
+
+CONDITION_LEVELS <- c(
+  1,
+  1e2,
+  1e4,
+  1e6,
+  1e8,
+  1e10,
+  1e12
+)
+
+
+CONDITION_ROWS <- 100
+
+CONDITION_COLS <- 50
+
+
+# ============================================================
+# Save experimental configuration
+# ============================================================
+
+configuration <- data.frame(
+  parameter = c(
+    "Master seed",
+    "Random trials per size",
+    "Condition trials per level",
+    "Runtime input trials",
+    "Timing batches",
+    "Bootstrap repetitions",
+    "Condition experiment rows",
+    "Condition experiment columns"
+  ),
+  value = c(
+    MASTER_SEED,
+    RANDOM_TRIALS_PER_SIZE,
+    CONDITION_TRIALS_PER_LEVEL,
+    RUNTIME_INPUT_TRIALS,
+    TIMING_BATCHES,
+    BOOTSTRAP_REPS,
+    CONDITION_ROWS,
+    CONDITION_COLS
+  )
+)
+
+write.csv(
+  configuration,
+  file.path(
+    "Results",
+    "experiment_configuration.csv"
+  ),
+  row.names = FALSE
+)
 
 
 run_project <- function() {
 
-  cat("============================================================\n")
-  cat("QR DECOMPOSITION USING HOUSEHOLDER REFLECTIONS\n")
-  cat("============================================================\n")
+  cat(
+    "============================================================\n"
+  )
 
-  cat("\nR version:\n")
-  cat(R.version.string, "\n")
+  cat(
+    "HOUSEHOLDER QR NUMERICAL STUDY\n"
+  )
+
+  cat(
+    "============================================================\n"
+  )
+
+  cat(
+    "\nR version:\n"
+  )
+
+  cat(
+    R.version.string,
+    "\n"
+  )
 
 
   # ==========================================================
-  # 1. Hand-calculated example
+  # Reproducibility
   # ==========================================================
 
-  cat("\n============================================================\n")
-  cat("1. HAND-CALCULATED EXAMPLE\n")
-  cat("============================================================\n")
+  set.seed(
+    MASTER_SEED
+  )
 
-  A <- matrix(
+  cat(
+    "\nMaster random seed:",
+    MASTER_SEED,
+    "\n"
+  )
+
+
+  # ==========================================================
+  # 1. Small verification example
+  # ==========================================================
+
+  cat(
+    "\n============================================================\n"
+  )
+
+  cat(
+    "1. SMALL VERIFICATION EXAMPLE\n"
+  )
+
+  cat(
+    "============================================================\n"
+  )
+
+  A_example <- matrix(
     c(
       4, 3, 0,
       1, 2, 2
@@ -37,275 +235,387 @@ run_project <- function() {
     ncol = 2
   )
 
-  cat("\nInput matrix A:\n")
-  print(A)
-
-
-  # ==========================================================
-  # Householder QR
-  # ==========================================================
-
-  householder_result <- householder_qr(A)
-
-  Q_full <- householder_result$Q
-  R_full <- householder_result$R
-
-  number_of_columns <- ncol(A)
-
-  Q_householder <- Q_full[
-    ,
-    seq_len(number_of_columns),
-    drop = FALSE
-  ]
-
-  R_householder <- R_full[
-    seq_len(number_of_columns),
-    ,
-    drop = FALSE
-  ]
-
-  cat("\nHouseholder Q (full form):\n")
-  print(Q_full)
-
-  cat("\nHouseholder R (full form):\n")
-  print(zapsmall(R_full))
-
-  cat("\nHouseholder Q * R:\n")
-  print(zapsmall(Q_full %*% R_full))
-
-  cat("\nHouseholder Q^T * Q:\n")
-  print(zapsmall(t(Q_full) %*% Q_full))
-
-  householder_error <- verify_qr(
-    A,
-    Q_householder,
-    R_householder
-  )
-
-  cat(
-    "\nHouseholder orthogonality error:",
-    format(
-      householder_error$e_orth,
-      scientific = TRUE,
-      digits = 8
-    ),
-    "\n"
-  )
-
-  cat(
-    "Householder reconstruction error:",
-    format(
-      householder_error$e_rec,
-      scientific = TRUE,
-      digits = 8
-    ),
-    "\n"
-  )
-
-
-  # ==========================================================
-  # 2. R built-in QR
-  # ==========================================================
-
-  cat("\n============================================================\n")
-  cat("2. R BUILT-IN QR\n")
-  cat("============================================================\n")
-
-  builtin_result <- builtin_qr(A)
-
-  cat("\nBuilt-in Q:\n")
-  print(builtin_result$Q)
-
-  cat("\nBuilt-in R:\n")
-  print(zapsmall(builtin_result$R))
-
-  builtin_error <- verify_qr(
-    A,
-    builtin_result$Q,
-    builtin_result$R
-  )
-
-  cat(
-    "\nBuilt-in QR orthogonality error:",
-    format(
-      builtin_error$e_orth,
-      scientific = TRUE,
-      digits = 8
-    ),
-    "\n"
-  )
-
-  cat(
-    "Built-in QR reconstruction error:",
-    format(
-      builtin_error$e_rec,
-      scientific = TRUE,
-      digits = 8
-    ),
-    "\n"
-  )
-
-
-  # ==========================================================
-  # 3. Classical Gram-Schmidt
-  # ==========================================================
-
-  cat("\n============================================================\n")
-  cat("3. CLASSICAL GRAM-SCHMIDT\n")
-  cat("============================================================\n")
-
-  cgs_result <- classical_gram_schmidt_qr(A)
-
-  cat("\nCGS Q:\n")
-  print(cgs_result$Q)
-
-  cat("\nCGS R:\n")
-  print(zapsmall(cgs_result$R))
-
-  cgs_error <- verify_qr(
-    A,
-    cgs_result$Q,
-    cgs_result$R
-  )
-
-  cat(
-    "\nCGS orthogonality error:",
-    format(
-      cgs_error$e_orth,
-      scientific = TRUE,
-      digits = 8
-    ),
-    "\n"
-  )
-
-  cat(
-    "CGS reconstruction error:",
-    format(
-      cgs_error$e_rec,
-      scientific = TRUE,
-      digits = 8
-    ),
-    "\n"
-  )
-
-
-  # ==========================================================
-  # Save small-example errors
-  # ==========================================================
-
-  small_example_results <- data.frame(
-    method = c(
-      "Householder",
-      "R built-in QR",
-      "Classical Gram-Schmidt"
-    ),
-    e_orth = c(
-      householder_error$e_orth,
-      builtin_error$e_orth,
-      cgs_error$e_orth
-    ),
-    e_rec = c(
-      householder_error$e_rec,
-      builtin_error$e_rec,
-      cgs_error$e_rec
+  example_results <-
+    evaluate_methods(
+      A_example
     )
+
+  print(
+    example_results,
+    row.names = FALSE
   )
 
   write.csv(
-    small_example_results,
-    "small_example_results.csv",
+    example_results,
+    file.path(
+      "Results",
+      "small_example_results.csv"
+    ),
     row.names = FALSE
   )
 
 
   # ==========================================================
-  # 4. Random matrix experiments
+  # 2. Accuracy on random Gaussian matrices
   # ==========================================================
 
-  cat("\n============================================================\n")
-  cat("4. RANDOM MATRIX EXPERIMENTS\n")
-  cat("============================================================\n")
+  cat(
+    "\n============================================================\n"
+  )
 
-  random_results <- run_random_experiments()
+  cat(
+    "2. RANDOM MATRIX ACCURACY EXPERIMENT\n"
+  )
 
-  print(
-    random_results,
+  cat(
+    "============================================================\n"
+  )
+
+  random_raw <-
+    run_random_accuracy_experiment(
+      matrix_sizes = MATRIX_SIZES,
+      trials_per_size =
+        RANDOM_TRIALS_PER_SIZE
+    )
+
+  write.csv(
+    random_raw,
+    file.path(
+      "Results",
+      "random_accuracy_raw.csv"
+    ),
+    row.names = FALSE
+  )
+
+
+  random_summary <-
+    summarize_experiment(
+      data = random_raw,
+      group_columns = c(
+        "rows",
+        "cols",
+        "method"
+      ),
+      metric_columns = c(
+        "e_orth",
+        "e_rec"
+      ),
+      bootstrap_reps =
+        BOOTSTRAP_REPS
+    )
+
+  random_summary <-
+    random_summary[
+      order(
+        random_summary$rows,
+        random_summary$method
+      ),
+    ]
+
+  write.csv(
+    random_summary,
+    file.path(
+      "Results",
+      "random_accuracy_summary.csv"
+    ),
     row.names = FALSE
   )
 
 
   # ==========================================================
-  # 5. Nearly dependent matrix experiments
+  # 3. Controlled-condition stability experiment
   # ==========================================================
 
-  cat("\n============================================================\n")
-  cat("5. NEAR-DEPENDENT MATRIX EXPERIMENTS\n")
-  cat("============================================================\n")
+  cat(
+    "\n============================================================\n"
+  )
 
-  near_results <- run_near_dependent_experiments()
+  cat(
+    "3. CONTROLLED-CONDITION STABILITY EXPERIMENT\n"
+  )
 
-  print(
-    near_results,
+  cat(
+    "============================================================\n"
+  )
+
+  condition_raw <-
+    run_condition_experiment(
+      m = CONDITION_ROWS,
+      n = CONDITION_COLS,
+      condition_levels =
+        CONDITION_LEVELS,
+      trials_per_level =
+        CONDITION_TRIALS_PER_LEVEL
+    )
+
+  write.csv(
+    condition_raw,
+    file.path(
+      "Results",
+      "condition_stability_raw.csv"
+    ),
+    row.names = FALSE
+  )
+
+
+  condition_summary <-
+    summarize_experiment(
+      data = condition_raw,
+      group_columns = c(
+        "target_kappa",
+        "method"
+      ),
+      metric_columns = c(
+        "actual_kappa",
+        "e_orth",
+        "e_rec"
+      ),
+      bootstrap_reps =
+        BOOTSTRAP_REPS
+    )
+
+  condition_summary <-
+    condition_summary[
+      order(
+        condition_summary$target_kappa,
+        condition_summary$method
+      ),
+    ]
+
+  write.csv(
+    condition_summary,
+    file.path(
+      "Results",
+      "condition_stability_summary.csv"
+    ),
     row.names = FALSE
   )
 
 
   # ==========================================================
-  # 6. Generate plots
+  # 4. Runtime scaling experiment
   # ==========================================================
 
-  cat("\n============================================================\n")
-  cat("6. GENERATING PLOTS\n")
-  cat("============================================================\n")
+  cat(
+    "\n============================================================\n"
+  )
 
-  plot_random_results(random_results)
-  plot_near_dependent_results(near_results)
+  cat(
+    "4. RUNTIME SCALING EXPERIMENT\n"
+  )
 
-  cat("\nPlots generated successfully.\n")
+  cat(
+    "============================================================\n"
+  )
+
+  runtime_raw <-
+    run_runtime_experiment(
+      matrix_sizes =
+        MATRIX_SIZES,
+      input_trials =
+        RUNTIME_INPUT_TRIALS,
+      timing_batches =
+        TIMING_BATCHES
+    )
+
+  write.csv(
+    runtime_raw,
+    file.path(
+      "Results",
+      "runtime_raw.csv"
+    ),
+    row.names = FALSE
+  )
+
+
+  runtime_summary <-
+    summarize_experiment(
+      data = runtime_raw,
+      group_columns = c(
+        "rows",
+        "cols",
+        "method"
+      ),
+      metric_columns = c(
+        "runtime"
+      ),
+      bootstrap_reps =
+        BOOTSTRAP_REPS
+    )
+
+  runtime_summary <-
+    runtime_summary[
+      order(
+        runtime_summary$rows,
+        runtime_summary$method
+      ),
+    ]
+
+  write.csv(
+    runtime_summary,
+    file.path(
+      "Results",
+      "runtime_summary.csv"
+    ),
+    row.names = FALSE
+  )
+
+
+  # ==========================================================
+  # 5. Generate figures
+  # ==========================================================
+
+  cat(
+    "\n============================================================\n"
+  )
+
+  cat(
+    "5. GENERATING FIGURES\n"
+  )
+
+  cat(
+    "============================================================\n"
+  )
+
+
+  plot_summary_by_size(
+    random_summary,
+    metric = "e_orth",
+    output_file = file.path(
+      "Plots",
+      "random_orthogonality_summary.png"
+    ),
+    plot_title =
+      "Orthogonality Error on Random Gaussian Matrices",
+    y_label =
+      "Orthogonality error"
+  )
+
+
+  plot_summary_by_size(
+    random_summary,
+    metric = "e_rec",
+    output_file = file.path(
+      "Plots",
+      "random_reconstruction_summary.png"
+    ),
+    plot_title =
+      "Reconstruction Error on Random Gaussian Matrices",
+    y_label =
+      "Relative reconstruction error"
+  )
+
+
+  plot_condition_orthogonality(
+    condition_summary,
+    output_file = file.path(
+      "Plots",
+      "condition_orthogonality_summary.png"
+    )
+  )
+
+
+  plot_runtime_summary(
+    runtime_summary,
+    output_file = file.path(
+      "Plots",
+      "runtime_summary.png"
+    )
+  )
 
 
   # ==========================================================
   # Final summary
   # ==========================================================
 
-  cat("\n============================================================\n")
-  cat("PROJECT RUN COMPLETED SUCCESSFULLY\n")
-  cat("============================================================\n")
+  cat(
+    "\n============================================================\n"
+  )
 
-  cat("\nGenerated result files:\n")
-  cat("- small_example_results.csv\n")
-  cat("- random_results.csv\n")
-  cat("- near_dependent_results.csv\n")
-  cat("- random_orthogonality_error.png\n")
-  cat("- random_reconstruction_error.png\n")
-  cat("- random_runtime.png\n")
-  cat("- near_dependent_orthogonality_error.png\n")
+  cat(
+    "NUMERICAL STUDY COMPLETED SUCCESSFULLY\n"
+  )
+
+  cat(
+    "============================================================\n"
+  )
+
+  cat(
+    "\nRandom matrices per size:",
+    RANDOM_TRIALS_PER_SIZE,
+    "\n"
+  )
+
+  cat(
+    "Condition-number matrices per level:",
+    CONDITION_TRIALS_PER_LEVEL,
+    "\n"
+  )
+
+  cat(
+    "Runtime input matrices per size:",
+    RUNTIME_INPUT_TRIALS,
+    "\n"
+  )
+
+  cat(
+    "Bootstrap repetitions:",
+    BOOTSTRAP_REPS,
+    "\n"
+  )
+
+  cat(
+    "\nResults and figures were saved successfully.\n"
+  )
 }
 
 
-# Capture the complete textual output into a log file
-log_output <- capture.output(
-  run_project()
+# ============================================================
+# Run project and save console log
+# ============================================================
+
+log_connection <- file(
+  file.path(
+    "Logs",
+    "experiment_log.txt"
+  ),
+  open = "wt"
 )
+
+sink(
+  log_connection,
+  split = TRUE
+)
+
+tryCatch(
+
+  {
+
+    run_project()
+
+  },
+
+  finally = {
+
+    sink()
+
+    close(
+      log_connection
+    )
+  }
+)
+
+
+# ============================================================
+# Save software environment
+# ============================================================
 
 writeLines(
-  log_output,
-  "experiment_log.txt"
-)
-
-# Also display the saved log in the R console
-cat(
-  paste(
-    log_output,
-    collapse = "\n"
+  capture.output(
+    sessionInfo()
+  ),
+  file.path(
+    "Logs",
+    "session_info.txt"
   )
-)
-
-cat("\n")
-
-
-# Save the software/environment information
-writeLines(
-  capture.output(sessionInfo()),
-  "session_info.txt"
 )
