@@ -2,6 +2,8 @@
 HOUSEHOLDER QR NUMERICAL STUDY
 ============================================================
 
+Study start time: 2026-10-18 06:07:55 
+
 R version:
 R version 4.5.0 (2025-04-11 ucrt) 
 
@@ -261,6 +263,10 @@ NUMERICAL STUDY COMPLETED SUCCESSFULLY
 Random matrices per size: 50 
 Condition-number matrices per level: 50 
 Runtime input matrices per size: 20 
+Timing batches per runtime measurement: 5 
 Bootstrap repetitions: 1000 
+
+Study end time: 2026-10-18 06:18:20 
+Total elapsed study time (minutes): 10.41 
 
 Results and figures were saved successfully.

@@ -1,0 +1,9 @@
+"parameter","value"
+"Master seed",20261018
+"Random trials per size",50
+"Condition trials per level",50
+"Runtime input trials",20
+"Timing batches",5
+"Bootstrap repetitions",1000
+"Condition experiment rows",100
+"Condition experiment columns",50
